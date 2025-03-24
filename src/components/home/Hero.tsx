@@ -44,39 +44,20 @@ const Hero = () => {
             Compliance and Ethics for the AI Era
           </h1>
           <p className="mt-6 paragraph max-w-2xl mx-auto">
-            EthicX helps organizations assess datasets for ethical standards and regulatory 
-            compliance using advanced AI models. Identify data biases, compliance breaches,
-            and integrity issues before they become problems.
+            EthicX helps organizations assess AI systems for ethical standards and regulatory 
+            compliance using advanced evaluation tools. Identify compliance gaps, 
+            ethical concerns, and operational issues before they become problems.
           </p>
           
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
             <Link to="/dashboard" className="btn-primary">
-              Start Analyzing
+              Start Evaluating
               <ChevronRight className="ml-2 h-4 w-4" />
             </Link>
-            <Link to="/dashboard#demo" className="btn-secondary">
-              View Demo
+            <Link to="/about" className="btn-secondary">
+              Learn More
             </Link>
           </div>
-        </div>
-        
-        {/* Stats section */}
-        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          {[
-            { label: 'Compliance Checks', value: '50+' },
-            { label: 'Data Processed', value: '500M+' },
-            { label: 'Organizations', value: '200+' }
-          ].map((stat, idx) => (
-            <div 
-              key={stat.label}
-              ref={el => featureRefs.current[idx] = el}
-              className="glass-card px-6 py-8 animate-on-scroll"
-              style={{ transitionDelay: `${idx * 100}ms` }}
-            >
-              <p className="text-4xl font-bold text-primary">{stat.value}</p>
-              <p className="mt-2 text-sm text-gray-600">{stat.label}</p>
-            </div>
-          ))}
         </div>
       </div>
       
@@ -86,7 +67,7 @@ const Hero = () => {
           <h2 className="heading-lg">Key Features</h2>
           <p className="mt-4 paragraph max-w-2xl mx-auto">
             Our platform provides comprehensive tools to analyze, evaluate, and improve 
-            your data's ethical and compliance standards.
+            your AI systems' ethical and compliance standards across different jurisdictions.
           </p>
         </div>
         
@@ -94,23 +75,23 @@ const Hero = () => {
           {[
             {
               icon: <Shield className="h-10 w-10 text-primary" />,
-              title: 'Compliance Scoring',
-              description: 'Evaluate your datasets against industry standards and regulatory requirements.'
+              title: 'Geography-Based Compliance',
+              description: 'Evaluate your AI systems against region-specific regulations and standards.'
             },
             {
               icon: <BarChart3 className="h-10 w-10 text-primary" />,
-              title: 'Data Insights',
-              description: 'Identify patterns, biases, and anomalies in your data with advanced AI analysis.'
+              title: 'Intelligent Monitoring',
+              description: 'Continuously monitor AI systems for compliance with evolving ethical and regulatory requirements.'
             },
             {
               icon: <Check className="h-10 w-10 text-primary" />,
-              title: 'Automated Reports',
-              description: 'Generate detailed compliance reports with actionable recommendations.'
+              title: 'Automated Reporting',
+              description: 'Generate detailed compliance reports with actionable recommendations tailored to your needs.'
             }
           ].map((feature, idx) => (
             <div 
               key={feature.title}
-              ref={el => featureRefs.current[idx + 3] = el}
+              ref={el => featureRefs.current[idx] = el}
               className="glass-card px-6 py-8 flex flex-col items-center text-center animate-on-scroll"
               style={{ transitionDelay: `${idx * 100}ms` }}
             >
