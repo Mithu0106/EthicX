@@ -2,6 +2,11 @@
 import React from 'react';
 import { BarChart, XAxis, YAxis, Bar, ResponsiveContainer, Tooltip, Cell } from 'recharts';
 import { BarChart3, AlertTriangle } from 'lucide-react';
+import {
+  Tooltip as UITooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface DataInsightsProps {
   data: {
@@ -84,21 +89,27 @@ const DataInsights: React.FC<DataInsightsProps> = ({ data, loading = false }) =>
             <h4 className="text-sm font-medium text-gray-500 mb-3">Top Compliance Issues</h4>
             <div className="space-y-3">
               {issues.map((issue, idx) => (
-                <div 
-                  key={idx} 
-                  className="flex items-center justify-between p-3 border rounded-lg bg-white"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className={`p-1.5 rounded-full ${getSeverityColor(issue.severity)}`}>
-                      <AlertTriangle className="h-3.5 w-3.5" />
+                <UITooltip key={idx}>
+                  <TooltipTrigger asChild>
+                    <div 
+                      className="flex items-center justify-between p-3 border rounded-lg bg-white cursor-pointer hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className={`p-1.5 rounded-full ${getSeverityColor(issue.severity)}`}>
+                          <AlertTriangle className="h-3.5 w-3.5" />
+                        </div>
+                        <span className="text-sm font-medium">{issue.title}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-sm font-bold">{issue.count}</span>
+                        <span className="text-xs text-gray-500 ml-1">issues</span>
+                      </div>
                     </div>
-                    <span className="text-sm font-medium">{issue.title}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-sm font-bold">{issue.count}</span>
-                    <span className="text-xs text-gray-500 ml-1">issues</span>
-                  </div>
-                </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>{issue.title}: {issue.severity} severity</p>
+                  </TooltipContent>
+                </UITooltip>
               ))}
               
               <button 
