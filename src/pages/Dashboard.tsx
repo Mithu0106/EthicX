@@ -2,18 +2,18 @@
 import React from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import Hero from '@/components/home/Hero';
+import Dashboard from '@/components/dashboard/Dashboard';
 
-const Index = () => {
+const DashboardPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow">
-        <Hero />
+      <main className="flex-grow pt-16">
+        <Dashboard />
       </main>
       <Footer />
     </div>
   );
 };
 
-export default Index;
+export default DashboardPage;
