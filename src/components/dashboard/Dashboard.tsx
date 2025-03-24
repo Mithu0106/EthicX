@@ -38,7 +38,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div>
           <h1 className="heading-lg mb-2">Data Compliance Dashboard</h1>
-          <p className="text-gray-600">Upload and analyze your data for compliance and ethical standards.</p>
+          <p className="text-gray-600">Upload a file or connect to an API to analyze your data for compliance and ethical standards.</p>
         </div>
         <div className="flex justify-end items-center">
           {analysisComplete && (
@@ -59,7 +59,7 @@ const Dashboard = () => {
       <div className="space-y-8">
         {!analysisComplete && (
           <div className="glass-card p-6" id="upload">
-            <h2 className="text-xl font-medium mb-4">Upload Dataset</h2>
+            <h2 className="text-xl font-medium mb-4">Analyze Your Data</h2>
             <FileUpload onFileUpload={handleFileUpload} />
           </div>
         )}
