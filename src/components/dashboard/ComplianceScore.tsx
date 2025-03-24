@@ -34,7 +34,7 @@ const ComplianceScore: React.FC<ComplianceScoreProps> = ({ score, loading = fals
   };
   
   return (
-    <div className="glass-card p-6">
+    <div className="glass-card p-6 transition-all duration-300 hover:shadow-md">
       <div className="flex items-center space-x-2 mb-4">
         <Shield className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-medium">Compliance Score</h3>
@@ -63,27 +63,37 @@ const ComplianceScore: React.FC<ComplianceScoreProps> = ({ score, loading = fals
             </div>
           </div>
           
-          <Progress 
-            value={score} 
-            className="h-2 mt-2"
-            indicatorClassName={getScoreBackground(score)}
-          />
+          <div className="relative pt-1">
+            <Progress 
+              value={score} 
+              className={`h-2 mt-2 ${getScoreBackground(score).replace('bg-', 'bg-opacity-20 ')} overflow-hidden`}
+            />
+            <div 
+              className={`absolute top-1 left-0 h-2 ${getScoreBackground(score)} transition-all duration-500 rounded-full`} 
+              style={{ width: `${score}%` }}
+            ></div>
+          </div>
           
           <div className="grid grid-cols-3 gap-4 mt-8">
             {[
-              { label: 'Data Bias', score: Math.min(100, score + 5) },
-              { label: 'Regulatory', score: Math.max(0, score - 8) },
-              { label: 'Integrity', score: Math.min(100, score + 3) }
+              { label: 'Data Bias', score: Math.min(100, score + 5), tooltip: 'Measures unfair patterns in data' },
+              { label: 'Regulatory', score: Math.max(0, score - 8), tooltip: 'Compliance with industry standards' },
+              { label: 'Integrity', score: Math.min(100, score + 3), tooltip: 'Data consistency and accuracy' }
             ].map((category, idx) => (
-              <div key={category.label} className="text-center">
+              <div key={category.label} className="text-center group relative">
                 <p className="text-xs text-gray-500 mb-1">{category.label}</p>
                 <div className="relative h-1.5 bg-gray-200 rounded-full overflow-hidden">
                   <div 
-                    className={`absolute top-0 left-0 h-full ${getScoreBackground(category.score)}`}
+                    className={`absolute top-0 left-0 h-full ${getScoreBackground(category.score)} transition-all duration-500`}
                     style={{ width: `${category.score}%` }}
                   ></div>
                 </div>
                 <p className="mt-1 text-xs font-medium">{category.score}</p>
+                
+                {/* Tooltip */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                  {category.tooltip}
+                </div>
               </div>
             ))}
           </div>
