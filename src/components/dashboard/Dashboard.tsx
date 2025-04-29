@@ -4,11 +4,15 @@ import ComplianceScore from './ComplianceScore';
 import DataInsights from './DataInsights';
 import FileUpload from '../upload/FileUpload';
 import Reports from '../reports/Reports';
+import RegulatoryInfo from './RegulatoryInfo';
+import SectorFrameworks from './SectorFrameworks';
 import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { CheckCircle, Upload } from 'lucide-react';
 
 const Dashboard = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -16,6 +20,8 @@ const Dashboard = () => {
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [evaluationType, setEvaluationType] = useState("custom");
   const [geography, setGeography] = useState("global");
+  const [selectedSector, setSelectedSector] = useState("general");
+  const [customChecklistFile, setCustomChecklistFile] = useState<File | null>(null);
   
   const insightsData = [
     { category: 'Privacy', issues: 12, color: '#0ea5e9' },
@@ -40,26 +46,45 @@ const Dashboard = () => {
   };
 
   const geographyOptions = [
-    { value: "global", label: "Global Standards" },
-    { value: "eu", label: "European Union (GDPR, AI Act)" },
-    { value: "us", label: "United States" },
-    { value: "uk", label: "United Kingdom" },
-    { value: "canada", label: "Canada" },
-    { value: "australia", label: "Australia" },
-    { value: "japan", label: "Japan" },
-    { value: "china", label: "China" },
-    { value: "india", label: "India" },
-    { value: "brazil", label: "Brazil" },
+    { value: "global", label: "Global Standards 🌍" },
+    { value: "eu", label: "European Union 🇪🇺" },
+    { value: "us", label: "United States 🇺🇸" },
+    { value: "india", label: "India 🇮🇳" },
+    { value: "canada", label: "Canada 🇨🇦" },
+    { value: "singapore", label: "Singapore 🇸🇬" },
+    { value: "uk", label: "United Kingdom 🇬🇧" },
+    { value: "australia", label: "Australia 🇦🇺" },
+    { value: "japan", label: "Japan 🇯🇵" },
+    { value: "china", label: "China 🇨🇳" },
+    { value: "brazil", label: "Brazil 🇧🇷" },
   ];
 
   const prebuiltEvaluations = [
-    { id: "general", name: "General AI Compliance" },
-    { id: "healthcare", name: "Healthcare AI" },
-    { id: "finance", name: "Financial Services AI" },
-    { id: "education", name: "Educational AI" },
-    { id: "hr", name: "HR & Recruitment AI" },
-    { id: "marketing", name: "Marketing & Customer AI" },
+    { id: "general", name: "General AI Systems 🤖" },
+    { id: "healthcare", name: "Healthcare AI 🏥" },
+    { id: "finance", name: "Financial/Fintech AI 💰" },
+    { id: "government", name: "Government/Public Sector 🏛️" },
+    { id: "education", name: "Education AI 🎓" }
   ];
+  
+  const handleCustomChecklistUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      // Check if it's a valid file type (CSV or PDF)
+      const validTypes = ['text/csv', 'application/pdf'];
+      if (!validTypes.includes(file.type)) {
+        toast.error('Invalid file type', {
+          description: 'Please upload a CSV or PDF file only.'
+        });
+        return;
+      }
+      
+      setCustomChecklistFile(file);
+      toast.success('Custom checklist uploaded', {
+        description: `${file.name} will be applied to your evaluation.`
+      });
+    }
+  };
   
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -76,6 +101,7 @@ const Dashboard = () => {
               onClick={() => {
                 setFile(null);
                 setAnalysisComplete(false);
+                setCustomChecklistFile(null);
               }}
             >
               New Evaluation
@@ -121,14 +147,8 @@ const Dashboard = () => {
                       </SelectContent>
                     </Select>
                     
-                    {geography !== "global" && (
-                      <div className="mt-4 p-3 bg-blue-50 rounded-md text-sm">
-                        <p className="font-medium flex items-center">
-                          <CheckCircle className="h-4 w-4 mr-2 text-primary" />
-                          {geographyOptions.find(g => g.value === geography)?.label} regulations will be applied
-                        </p>
-                      </div>
-                    )}
+                    {/* Display regulatory information */}
+                    <RegulatoryInfo geography={geography} />
                   </div>
                   
                   <FileUpload onFileUpload={handleFileUpload} />
@@ -145,29 +165,63 @@ const Dashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    {prebuiltEvaluations.map(evaluation => (
-                      <button
-                        key={evaluation.id}
-                        className="p-4 border rounded-lg hover:bg-gray-50 text-left transition-colors"
-                        onClick={() => {
-                          setLoading(true);
-                          // Simulate analysis process for pre-built evaluation
-                          setTimeout(() => {
-                            setLoading(false);
-                            setAnalysisComplete(true);
-                            toast.success('Evaluation complete!', {
-                              description: `${evaluation.name} evaluation has been processed.`
-                            });
-                          }, 3000);
-                        }}
-                      >
-                        <div className="font-medium">{evaluation.name}</div>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Standard compliance checks for {evaluation.name.toLowerCase()} applications
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-4">
+                      Select Industry Sector
+                    </label>
+                    <RadioGroup 
+                      defaultValue="general" 
+                      onValueChange={setSelectedSector}
+                      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                    >
+                      {prebuiltEvaluations.map(evaluation => (
+                        <div key={evaluation.id} className="flex items-start space-x-2">
+                          <RadioGroupItem value={evaluation.id} id={`radio-${evaluation.id}`} />
+                          <Label 
+                            htmlFor={`radio-${evaluation.id}`} 
+                            className="p-3 border rounded-lg flex-grow cursor-pointer hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="font-medium">{evaluation.name}</div>
+                            <p className="text-sm text-gray-500 mt-1">
+                              Standard compliance checks for {evaluation.name.toLowerCase()}
+                            </p>
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                    
+                    {/* Display sector frameworks */}
+                    <SectorFrameworks sectorId={selectedSector} />
+                  </div>
+                  
+                  {/* Custom checklist upload option */}
+                  <div className="mb-6 border-t pt-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Upload Custom Checklist (Optional)
+                    </label>
+                    <div className="p-4 border-2 border-dashed rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
+                      <div className="flex flex-col items-center justify-center">
+                        <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                        <p className="text-sm text-gray-500 text-center mb-2">
+                          Upload a custom checklist in CSV or PDF format
                         </p>
-                      </button>
-                    ))}
+                        <input 
+                          type="file" 
+                          id="custom-checklist" 
+                          className="hidden" 
+                          accept=".csv,.pdf"
+                          onChange={handleCustomChecklistUpload}
+                        />
+                        <label htmlFor="custom-checklist" className="btn-secondary text-sm cursor-pointer">
+                          Browse Files
+                        </label>
+                        {customChecklistFile && (
+                          <div className="mt-2 text-sm text-primary font-medium">
+                            {customChecklistFile.name}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="mb-6">
@@ -189,6 +243,29 @@ const Dashboard = () => {
                         ))}
                       </SelectContent>
                     </Select>
+                    
+                    {/* Display regulatory information in prebuilt tab too */}
+                    <RegulatoryInfo geography={geography} />
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      onClick={() => {
+                        setLoading(true);
+                        // Simulate analysis process for pre-built evaluation
+                        setTimeout(() => {
+                          setLoading(false);
+                          setAnalysisComplete(true);
+                          toast.success('Evaluation complete!', {
+                            description: `${prebuiltEvaluations.find(e => e.id === selectedSector)?.name} evaluation has been processed.`
+                          });
+                        }, 3000);
+                      }}
+                    >
+                      Start Evaluation
+                    </button>
                   </div>
                 </CardContent>
               </Card>
