@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, FileCode } from 'lucide-react';
+import { CheckCircle, FileCode, Shield } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
@@ -81,24 +81,34 @@ const Dashboard = () => {
         </div>
         <div className="flex justify-end items-center space-x-4">
           <Link to="/evaluation">
-            <Button className="flex items-center space-x-2">
+            <Button variant="outline" className="flex items-center space-x-2">
               <FileCode className="h-4 w-4" />
               <span>Code Evaluation</span>
             </Button>
           </Link>
           
-          {analysisComplete && (
-            <button 
-              type="button"
-              className="btn-primary"
-              onClick={() => {
+          <Button 
+            className="flex items-center space-x-2"
+            onClick={() => {
+              if (analysisComplete) {
                 setAnalysisComplete(false);
                 setCustomChecklistFile(null);
-              }}
-            >
-              New Evaluation
-            </button>
-          )}
+              } else {
+                // Start a new compliance check
+                setLoading(true);
+                setTimeout(() => {
+                  setLoading(false);
+                  setAnalysisComplete(true);
+                  toast.success('Compliance check complete!', {
+                    description: 'Your compliance check has been processed.'
+                  });
+                }, 3000);
+              }
+            }}
+          >
+            <Shield className="h-4 w-4" />
+            <span>{analysisComplete ? "New Compliance Check" : "Start Compliance Check"}</span>
+          </Button>
         </div>
       </div>
       
@@ -141,24 +151,6 @@ const Dashboard = () => {
                     
                     {/* Display regulatory information */}
                     <RegulatoryInfo geography={geography} />
-                  </div>
-                  
-                  <div className="flex justify-end">
-                    <Button
-                      onClick={() => {
-                        setLoading(true);
-                        // Simulate analysis process
-                        setTimeout(() => {
-                          setLoading(false);
-                          setAnalysisComplete(true);
-                          toast.success('Evaluation complete!', {
-                            description: 'Your compliance evaluation has been processed.'
-                          });
-                        }, 3000);
-                      }}
-                    >
-                      Start Compliance Check
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -254,26 +246,6 @@ const Dashboard = () => {
                     
                     {/* Display regulatory information in prebuilt tab too */}
                     <RegulatoryInfo geography={geography} />
-                  </div>
-                  
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      className="btn-primary"
-                      onClick={() => {
-                        setLoading(true);
-                        // Simulate analysis process for pre-built evaluation
-                        setTimeout(() => {
-                          setLoading(false);
-                          setAnalysisComplete(true);
-                          toast.success('Evaluation complete!', {
-                            description: `${prebuiltEvaluations.find(e => e.id === selectedSector)?.name} evaluation has been processed.`
-                          });
-                        }, 3000);
-                      }}
-                    >
-                      Start Evaluation
-                    </button>
                   </div>
                 </CardContent>
               </Card>
