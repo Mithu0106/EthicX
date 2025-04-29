@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import ComplianceScore from './ComplianceScore';
 import DataInsights from './DataInsights';
-import FileUpload from '../upload/FileUpload';
 import Reports from '../reports/Reports';
 import RegulatoryInfo from './RegulatoryInfo';
 import SectorFrameworks from './SectorFrameworks';
@@ -12,10 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, Upload } from 'lucide-react';
+import { CheckCircle, FileCode } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
-  const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [evaluationType, setEvaluationType] = useState("custom");
@@ -31,20 +31,6 @@ const Dashboard = () => {
     { category: 'Compliance', issues: 10, color: '#8b5cf6' },
   ];
   
-  const handleFileUpload = (file: File) => {
-    setFile(file);
-    setLoading(true);
-    
-    // Simulate analysis process
-    setTimeout(() => {
-      setLoading(false);
-      setAnalysisComplete(true);
-      toast.success('Analysis complete!', {
-        description: 'Your data has been processed and evaluated.'
-      });
-    }, 3000);
-  };
-
   const geographyOptions = [
     { value: "global", label: "Global Standards 🌍" },
     { value: "eu", label: "European Union 🇪🇺" },
@@ -93,13 +79,19 @@ const Dashboard = () => {
           <h1 className="heading-lg mb-2">AI Compliance Dashboard</h1>
           <p className="text-gray-600">Evaluate your AI systems for compliance and ethical standards based on deployment geography and industry requirements.</p>
         </div>
-        <div className="flex justify-end items-center">
+        <div className="flex justify-end items-center space-x-4">
+          <Link to="/evaluation">
+            <Button className="flex items-center space-x-2">
+              <FileCode className="h-4 w-4" />
+              <span>Code Evaluation</span>
+            </Button>
+          </Link>
+          
           {analysisComplete && (
             <button 
               type="button"
               className="btn-primary"
               onClick={() => {
-                setFile(null);
                 setAnalysisComplete(false);
                 setCustomChecklistFile(null);
               }}
@@ -123,7 +115,7 @@ const Dashboard = () => {
                 <CardHeader>
                   <CardTitle>Custom AI Evaluation</CardTitle>
                   <CardDescription>
-                    Upload your AI system data and select applicable geographic regulations
+                    Select applicable geographic regulations for your AI system
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -151,7 +143,23 @@ const Dashboard = () => {
                     <RegulatoryInfo geography={geography} />
                   </div>
                   
-                  <FileUpload onFileUpload={handleFileUpload} />
+                  <div className="flex justify-end">
+                    <Button
+                      onClick={() => {
+                        setLoading(true);
+                        // Simulate analysis process
+                        setTimeout(() => {
+                          setLoading(false);
+                          setAnalysisComplete(true);
+                          toast.success('Evaluation complete!', {
+                            description: 'Your compliance evaluation has been processed.'
+                          });
+                        }, 3000);
+                      }}
+                    >
+                      Start Compliance Check
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -201,7 +209,7 @@ const Dashboard = () => {
                     </label>
                     <div className="p-4 border-2 border-dashed rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
                       <div className="flex flex-col items-center justify-center">
-                        <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                        <FileCode className="h-8 w-8 text-gray-400 mb-2" />
                         <p className="text-sm text-gray-500 text-center mb-2">
                           Upload a custom checklist in CSV or PDF format
                         </p>

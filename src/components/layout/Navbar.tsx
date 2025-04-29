@@ -11,6 +11,7 @@ export const Navbar = () => {
   const navItems = [
     { name: 'Home', path: '/' },
     { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Evaluation', path: '/evaluation' },
     { name: 'Reports', path: '/dashboard#reports' },
   ];
   
